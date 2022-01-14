@@ -8,7 +8,7 @@ Sprites made by yours truly.
 
 ### How to run
 ```
-git clone git@github.com:piercef256/Asteroids-Java-OOP.git
+git clone git@github.com:piercef256/Java-OOP-Asteroids-Game.git
 cd Asteroids-Java-OOP/src && make run
 ```
 
