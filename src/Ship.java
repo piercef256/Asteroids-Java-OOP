@@ -9,23 +9,23 @@ public class Ship extends Sprite {
     private int rotation;
 
     public int getWidth() {
-        return this.width;
+        return width;
     }
 
     public int getHeight() {
-        return this.height;
+        return height;
     }
 
     public int getX() {
-        return this.x;
+        return x;
     }
 
     public int getY() {
-        return this.y;
+        return y;
     }
 
     public int getRotation() {
-        return this.rotation;
+        return rotation;
     }
 
     public Ship(int x, int y) {
@@ -37,8 +37,8 @@ public class Ship extends Sprite {
     }
 
     public void updatePosition() {
-        x = (int) Math.ceil(dx);
-        y = (int) Math.ceil(dy);
+        x = (int) (dx);
+        y = (int) (dy);
 
     }
 
