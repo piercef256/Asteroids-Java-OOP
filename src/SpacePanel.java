@@ -157,11 +157,21 @@ public class SpacePanel extends JPanel implements Runnable {
 
     public class KeyboardListener extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
+
+            // int key = e.getKeyCode();
+            // ship.addKeyPress(key);
+
+            // HashMap<Integer, Boolean> pressedKeys = ship.getKeys();
+
+            // if (pressedKeys.getOrDefault(KeyEvent.VK_SPACE, false)) {
+            // fire();
+            // }
+
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 fire();
-            } else {
-                ship.keyPressed(e);
             }
+            ship.keyPressed(e);
+
         }
 
         public void keyReleased(KeyEvent e) {
