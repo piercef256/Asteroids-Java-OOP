@@ -14,6 +14,11 @@ public class SpacePanel extends JPanel implements Runnable {
     static final int GAME_HEIGHT = 600;
     static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH, GAME_HEIGHT);
     public List<Asteroid> asteroidList = new ArrayList<Asteroid>();
+    private List<Projectile> projectiles;
+
+    public List<Projectile> getProjectiles() {
+        return projectiles;
+    }
 
     Thread gameThread;
     Image image;
@@ -32,14 +37,19 @@ public class SpacePanel extends JPanel implements Runnable {
         this.addKeyListener(new KeyboardListener());
         this.setPreferredSize(SCREEN_SIZE);
         asteroidCreationLoop();
+        projectiles = new ArrayList<>();
 
         gameThread = new Thread(this);
         gameThread.start();
 
     }
 
+    public void addProjectile() {
+        projectiles.add(new Projectile(ship.getX() + (ship.getWidth() / 2), ship.getY()));
+    }
+
     public void addShip() {
-        ship = new Ship(50, 50);
+        ship = new Ship(400, 400);
     }
 
     public static int getGameWidth() {
@@ -60,10 +70,12 @@ public class SpacePanel extends JPanel implements Runnable {
         }
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.rotate(Math.toRadians(ship.getRotation()), ship.getX() + ship.getWidth() / 2,
+                ship.getY() + ship.getHeight() / 2);
         g2d.drawImage(ship.getImage(), ship.getX(),
                 ship.getY(), this);
 
-        List<Projectile> projectiles = ship.getProjectiles();
+        List<Projectile> projectiles = getProjectiles();
 
         for (Projectile projectile : projectiles) {
             projectile.draw(g);
@@ -96,8 +108,14 @@ public class SpacePanel extends JPanel implements Runnable {
         }, 0, 1000);
     }
 
+    public void fire() {
+        // projectiles.add(new Projectile(x + width, 0, rotation));
+        addProjectile();
+
+    }
+
     private void updateProjectiles() {
-        List<Projectile> projectiles = ship.getProjectiles();
+        List<Projectile> projectiles = getProjectiles();
 
         for (int i = 0; i < projectiles.size(); i++) {
             Projectile projectile = projectiles.get(i);
@@ -139,7 +157,11 @@ public class SpacePanel extends JPanel implements Runnable {
 
     public class KeyboardListener extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
-            ship.keyPressed(e);
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                fire();
+            } else {
+                ship.keyPressed(e);
+            }
         }
 
         public void keyReleased(KeyEvent e) {

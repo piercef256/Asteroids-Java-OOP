@@ -5,13 +5,11 @@ import java.util.*;
 
 public class Projectile extends Rectangle {
     Random random;
-    int xSpeed;
-    int ySpeed;
-    int VELOCITY = 1;
     protected boolean visibility;
     private final int PROJECTILE_SPEED = 2;
 
     Projectile(int x, int y) {
+
         super(x, y, 5, 5);
         visibility = true;
     }
@@ -24,18 +22,10 @@ public class Projectile extends Rectangle {
         visibility = state;
     }
 
-    public int getxSpeed() {
-        return xSpeed;
-    }
-
-    public int getySpeed() {
-        return ySpeed;
-    }
-
     public void updatePosition() {
-        x += PROJECTILE_SPEED;
+        y -= PROJECTILE_SPEED;
 
-        if (x > SpacePanel.GAME_WIDTH) {
+        if (x > SpacePanel.GAME_WIDTH || x < 0 || y > SpacePanel.GAME_HEIGHT || y < 0) {
             visibility = false;
         }
     }
