@@ -14,7 +14,7 @@ public class SpacePanel extends JPanel implements Runnable {
     static final int GAME_HEIGHT = 600;
     static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH, GAME_HEIGHT);
     public List<Asteroid> asteroidList = new ArrayList<Asteroid>();
-    private List<Projectile> projectiles;
+    public List<Projectile> projectiles = new ArrayList<Projectile>();
 
     public List<Projectile> getProjectiles() {
         return projectiles;
@@ -37,15 +37,34 @@ public class SpacePanel extends JPanel implements Runnable {
         this.addKeyListener(new KeyboardListener());
         this.setPreferredSize(SCREEN_SIZE);
         asteroidCreationLoop();
-        projectiles = new ArrayList<>();
 
         gameThread = new Thread(this);
         gameThread.start();
 
     }
 
+    public Projectile generateProjectile() {
+        int rotation = ship.getRotation();
+        // int x = ship.getX() + (ship.getWidth() / 2)
+        // + (int) Math.cos(Math.toRadians(rotation));
+
+        // int y = ship.getY() + (ship.getHeight() / 2)
+        // - (int) Math.sin(Math.toRadians(rotation));
+
+        int x = ship.getX() + (ship.getWidth() / 2);
+        int y = ship.getY();
+
+        x += Math.cos(Math.toRadians(rotation - 90)) * 10;
+        y += Math.abs(Math.sin(Math.toRadians(rotation - 180)) * 10);
+
+        return new Projectile(x, y, rotation);
+    }
+
     public void addProjectile() {
-        projectiles.add(new Projectile(ship.getX() + (ship.getWidth() / 2), ship.getY()));
+        Projectile projectile = generateProjectile();
+        projectiles.add(projectile);
+        // projectiles.add(new Projectile(ship.getX() + (ship.getWidth() / 2),
+        // ship.getY(), ship.getRotation()));
     }
 
     public void addShip() {
@@ -64,9 +83,12 @@ public class SpacePanel extends JPanel implements Runnable {
     }
 
     public void draw(Graphics g) {
-        for (int i = 0; i < asteroidList.size(); i++) {
-            Asteroid asteroid = asteroidList.get(i);
+        for (Asteroid asteroid : asteroidList) {
             asteroid.draw(g);
+        }
+
+        for (Projectile projectile : projectiles) {
+            projectile.draw(g);
         }
 
         Graphics2D g2d = (Graphics2D) g;
@@ -74,12 +96,6 @@ public class SpacePanel extends JPanel implements Runnable {
                 ship.getY() + ship.getHeight() / 2);
         g2d.drawImage(ship.getImage(), ship.getX(),
                 ship.getY(), this);
-
-        List<Projectile> projectiles = getProjectiles();
-
-        for (Projectile projectile : projectiles) {
-            projectile.draw(g);
-        }
     }
 
     public void updatePosition() {
@@ -157,11 +173,21 @@ public class SpacePanel extends JPanel implements Runnable {
 
     public class KeyboardListener extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
+
+            // int key = e.getKeyCode();
+            // ship.addKeyPress(key);
+
+            // HashMap<Integer, Boolean> pressedKeys = ship.getKeys();
+
+            // if (pressedKeys.getOrDefault(KeyEvent.VK_SPACE, false)) {
+            // fire();
+            // }
+
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 fire();
-            } else {
-                ship.keyPressed(e);
             }
+            ship.keyPressed(e);
+
         }
 
         public void keyReleased(KeyEvent e) {
