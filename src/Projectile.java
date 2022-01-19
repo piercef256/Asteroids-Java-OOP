@@ -6,7 +6,7 @@ import java.util.*;
 public class Projectile extends Rectangle {
     Random random;
     protected boolean visibility;
-    private final int PROJECTILE_SPEED = 2;
+    private final int PROJECTILE_SPEED = 5;
     int direction;
 
     Projectile(int x, int y, int direction) {

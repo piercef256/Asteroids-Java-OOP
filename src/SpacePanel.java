@@ -15,6 +15,8 @@ public class SpacePanel extends JPanel implements Runnable {
     static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH, GAME_HEIGHT);
     public List<Asteroid> asteroidList = new ArrayList<Asteroid>();
     public List<Projectile> projectiles = new ArrayList<Projectile>();
+    public boolean ingame;
+    public ScoreDisplay scoreDisplay;
 
     public List<Projectile> getProjectiles() {
         return projectiles;
@@ -37,6 +39,8 @@ public class SpacePanel extends JPanel implements Runnable {
         this.addKeyListener(new KeyboardListener());
         this.setPreferredSize(SCREEN_SIZE);
         asteroidCreationLoop();
+        ingame = true;
+        scoreDisplay = new ScoreDisplay(GAME_WIDTH, GAME_HEIGHT);
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -45,11 +49,6 @@ public class SpacePanel extends JPanel implements Runnable {
 
     public Projectile generateProjectile() {
         int rotation = ship.getRotation();
-        // int x = ship.getX() + (ship.getWidth() / 2)
-        // + (int) Math.cos(Math.toRadians(rotation));
-
-        // int y = ship.getY() + (ship.getHeight() / 2)
-        // - (int) Math.sin(Math.toRadians(rotation));
 
         int x = ship.getX() + (ship.getWidth() / 2);
         int y = ship.getY();
@@ -63,8 +62,7 @@ public class SpacePanel extends JPanel implements Runnable {
     public void addProjectile() {
         Projectile projectile = generateProjectile();
         projectiles.add(projectile);
-        // projectiles.add(new Projectile(ship.getX() + (ship.getWidth() / 2),
-        // ship.getY(), ship.getRotation()));
+
     }
 
     public void addShip() {
@@ -83,6 +81,7 @@ public class SpacePanel extends JPanel implements Runnable {
     }
 
     public void draw(Graphics g) {
+        scoreDisplay.draw(g, ingame);
         for (Asteroid asteroid : asteroidList) {
             asteroid.draw(g);
         }
@@ -125,9 +124,7 @@ public class SpacePanel extends JPanel implements Runnable {
     }
 
     public void fire() {
-        // projectiles.add(new Projectile(x + width, 0, rotation));
         addProjectile();
-
     }
 
     private void updateProjectiles() {
@@ -160,13 +157,52 @@ public class SpacePanel extends JPanel implements Runnable {
     }
 
     public void run() {
-        while (true) {
+        while (ingame) {
             updatePosition();
+            checkCollisions();
             repaint();
             try {
-                Thread.sleep(10);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+
+        }
+        // if (ingame == false) {
+        // System.exit(0);
+        // }
+    }
+
+    public void checkCollisions() {
+
+        Rectangle r3 = ship.getBounds();
+
+        for (Asteroid asteroid : asteroidList) {
+
+            Rectangle r2 = asteroid.getBounds();
+
+            if (r3.intersects(r2)) {
+
+                ship.setVisibility(false);
+                // asteroid.setVisibility(false);
+                ingame = false;
+            }
+        }
+
+        for (Projectile m : projectiles) {
+
+            Rectangle r1 = m.getBounds();
+
+            for (Asteroid asteroid : asteroidList) {
+
+                Rectangle r2 = asteroid.getBounds();
+
+                if (r1.intersects(r2)) {
+
+                    m.setVisibility(false);
+                    asteroid.setVisibility(false);
+                    scoreDisplay.addScore(asteroid.getDiameter());
+                }
             }
         }
     }
@@ -194,4 +230,5 @@ public class SpacePanel extends JPanel implements Runnable {
             ship.keyReleased(e);
         }
     }
+
 }

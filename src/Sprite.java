@@ -3,6 +3,7 @@
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import java.awt.Rectangle;
 
 public class Sprite {
     protected int x;
@@ -28,6 +29,10 @@ public class Sprite {
         height = image.getHeight(null);
     }
 
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
+    }
+
     public Image getImage() {
         return image;
     }
@@ -40,11 +45,11 @@ public class Sprite {
         return y;
     }
 
-    public boolean isVisible() {
+    public boolean getVisibility() {
         return visible;
     }
 
-    public void setVisible(Boolean visible) {
+    public void setVisibility(Boolean visible) {
         this.visible = visible;
     }
 }
