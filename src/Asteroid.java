@@ -8,6 +8,7 @@ public class Asteroid extends Rectangle {
     int xSpeed;
     int ySpeed;
     int VELOCITY = 1;
+    int diameter;
     protected boolean visibility;
 
     public boolean getVisibility() {
@@ -26,8 +27,13 @@ public class Asteroid extends Rectangle {
         return ySpeed;
     }
 
+    public int getDiameter() {
+        return diameter;
+    }
+
     Asteroid(int randomX, int randomY, int randomDiameter) {
         super(randomX, randomY, randomDiameter, randomDiameter);
+        diameter = randomDiameter;
 
         visibility = true;
         random = new Random();
