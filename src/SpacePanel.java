@@ -33,30 +33,30 @@ public class SpacePanel extends JPanel implements Runnable {
     Ship ship;
 
     SpacePanel() {
-        addAsteroids(1);
-        addShip();
         this.setFocusable(true);
         this.addKeyListener(new KeyboardListener());
         this.setPreferredSize(SCREEN_SIZE);
-        asteroidCreationLoop();
-        ingame = true;
-        scoreDisplay = new ScoreDisplay(GAME_WIDTH, GAME_HEIGHT);
 
+        addShip();
+        addAsteroids(1);
+        startAsteroidCreationThread();
+
+        scoreDisplay = new ScoreDisplay(GAME_WIDTH, GAME_HEIGHT);
+        ingame = true;
         gameThread = new Thread(this);
         gameThread.start();
-
     }
 
     public Projectile generateProjectile() {
-        int rotation = ship.getRotation();
+        int shipRotation = ship.getRotation();
 
         int x = ship.getX() + (ship.getWidth() / 2);
         int y = ship.getY();
 
-        x += Math.cos(Math.toRadians(rotation - 90)) * 10;
-        y += Math.abs(Math.sin(Math.toRadians(rotation - 180)) * 10);
+        x += Math.cos(Math.toRadians(shipRotation - 90)) * ship.getWidth() / 2;
+        y += Math.abs(Math.sin(Math.toRadians(shipRotation - 90)) * ship.getHeight() / 2);
 
-        return new Projectile(x, y, rotation);
+        return new Projectile(x, y, shipRotation);
     }
 
     public void addProjectile() {
@@ -111,16 +111,16 @@ public class SpacePanel extends JPanel implements Runnable {
         updateProjectiles();
     }
 
-    public void asteroidCreationLoop() {
+    public void startAsteroidCreationThread() {
         Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
 
             @Override
             public void run() {
-                int numAsteroids = ThreadLocalRandom.current().nextInt(1, 4);
+                int numAsteroids = ThreadLocalRandom.current().nextInt(1, 3);
                 addAsteroids(numAsteroids);
             }
-        }, 0, 1000);
+        }, 0, 2000);
     }
 
     public void fire() {
@@ -157,10 +157,13 @@ public class SpacePanel extends JPanel implements Runnable {
     }
 
     public void run() {
-        while (ingame) {
-            updatePosition();
-            checkCollisions();
-            repaint();
+        while (true) {
+
+            if (ingame) {
+                updatePosition();
+                checkCollisions();
+                repaint();
+            }
             try {
                 Thread.sleep(20);
             } catch (InterruptedException e) {
@@ -209,21 +212,10 @@ public class SpacePanel extends JPanel implements Runnable {
 
     public class KeyboardListener extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
-
-            // int key = e.getKeyCode();
-            // ship.addKeyPress(key);
-
-            // HashMap<Integer, Boolean> pressedKeys = ship.getKeys();
-
-            // if (pressedKeys.getOrDefault(KeyEvent.VK_SPACE, false)) {
-            // fire();
-            // }
-
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 fire();
             }
             ship.keyPressed(e);
-
         }
 
         public void keyReleased(KeyEvent e) {
