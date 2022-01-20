@@ -8,6 +8,14 @@ public class Ship extends Sprite {
     private double dy = 200;
     private int rotation;
 
+    public Ship(int x, int y) {
+        super(x, y);
+        rotation = 0;
+
+        loadImage("../sprites/ship.png");
+        getImageDimensions();
+    }
+
     public int getWidth() {
         return width;
     }
@@ -26,14 +34,6 @@ public class Ship extends Sprite {
 
     public int getRotation() {
         return rotation;
-    }
-
-    public Ship(int x, int y) {
-        super(x, y);
-        rotation = 0;
-
-        loadImage("../sprites/ship.png");
-        getImageDimensions();
     }
 
     public void updatePosition() {
