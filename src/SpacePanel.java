@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class SpacePanel extends JPanel implements Runnable {
     static final int GAME_WIDTH = 600;
@@ -23,6 +24,7 @@ public class SpacePanel extends JPanel implements Runnable {
     public Graphics graphics;
     public Random random;
     public KeyboardListener keyboardListener;
+    public Thread projectileThread;
 
     SpacePanel() {
         gameThread = new Thread(this);
@@ -175,57 +177,47 @@ public class SpacePanel extends JPanel implements Runnable {
     }
 
     public void checkCollisions() {
+        checkCollisionsProjectiles();
+        checkCollisionsShip();
+    }
 
-        Rectangle r0 = ship.getBounds();
+    public void checkCollisionsProjectiles() {
 
-        for (Asteroid asteroid : asteroidList) {
+        for (int i = 0; i < projectiles.size(); i++) {
+            Projectile projectile = projectiles.get(i);
+            Rectangle r1 = projectile.getBounds();
 
-            Rectangle r2 = asteroid.getBounds();
-
-            if (r0.intersects(r2)) {
-
-                ship.setVisibility(false);
-                // asteroid.setVisibility(false);
-                ingame = false;
-            }
-        }
-
-        for (Projectile m : projectiles) {
-
-            Rectangle r1 = m.getBounds();
-
-            for (Asteroid asteroid : asteroidList) {
-
+            for (int j = 0; j < asteroidList.size(); j++) {
+                Asteroid asteroid = asteroidList.get(j);
                 Rectangle r2 = asteroid.getBounds();
 
-                if (r1.intersects(r2)) {
-
-                    // m.setVisibility(false);
-                    asteroid.setVisibility(false);
-                    scoreDisplay.addScore(asteroid.getDiameter());
+                if (checkCollision(r1, r2)) {
+                    asteroidList.remove(j);
+                    projectiles.remove(i);
+                    scoreDisplay.addScore(10);
                 }
             }
         }
     }
 
+    public void checkCollisionsShip() {
+
+        Rectangle r0 = ship.getBounds();
+
+        for (Asteroid asteroid : asteroidList) {
+
+            Rectangle r1 = asteroid.getBounds();
+
+            if (r0.intersects(r1)) {
+                ingame = false;
+            }
+        }
+
+    }
+
     public class KeyboardListener extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
-
             ship.keyPressed(e);
-            // if (ship.getPressedKeys().getOrDefault(KeyEvent.VK_SPACE, false)) {
-            // // fire every 100 ms
-            // Timer timer = new Timer();
-            // timer.schedule(new TimerTask() {
-            // @Override
-            // public void run() {
-            // fire();
-            // }
-            // }, 0, 1000);
-            // // fire();
-            // // timer.cancel();
-
-            // }
-
         }
 
         public void keyReleased(KeyEvent e) {
