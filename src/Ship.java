@@ -4,13 +4,15 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 public class Ship extends Sprite {
-    private double dx = 200;
-    private double dy = 200;
     private int rotation;
+    private int rotationSpeed;
+    private int groundSpeed;
 
     public Ship(int x, int y) {
         super(x, y);
         rotation = 0;
+        rotationSpeed = 5;
+        groundSpeed = 2;
 
         loadImage("../sprites/ship.png");
         getImageDimensions();
@@ -37,8 +39,19 @@ public class Ship extends Sprite {
     }
 
     public void updatePosition() {
-        x = (int) (dx);
-        y = (int) (dy);
+        if (pressedKeys.getOrDefault(KeyEvent.VK_LEFT, false)) {
+            rotation -= rotationSpeed;
+        }
+
+        if (pressedKeys.getOrDefault(KeyEvent.VK_RIGHT, false)) {
+            rotation += rotationSpeed;
+        }
+
+        if (pressedKeys.getOrDefault(KeyEvent.VK_UP, false)) {
+            x += Math.cos(Math.toRadians(rotation - 90)) * groundSpeed;
+            y += Math.sin(Math.toRadians(rotation - 90)) * groundSpeed;
+
+        }
 
     }
 
@@ -58,20 +71,20 @@ public class Ship extends Sprite {
         int key = e.getKeyCode();
         pressedKeys.put(key, Boolean.TRUE);
 
-        if (pressedKeys.getOrDefault(KeyEvent.VK_LEFT, false)) {
-            rotation -= 15;
-        }
+        // if (pressedKeys.getOrDefault(KeyEvent.VK_LEFT, false)) {
+        // rotation -= 15;
+        // }
 
-        if (pressedKeys.getOrDefault(KeyEvent.VK_RIGHT, false)) {
-            rotation += 15;
-        }
+        // if (pressedKeys.getOrDefault(KeyEvent.VK_RIGHT, false)) {
+        // rotation += 15;
+        // }
 
-        if (pressedKeys.getOrDefault(KeyEvent.VK_UP, false)) {
+        // if (pressedKeys.getOrDefault(KeyEvent.VK_UP, false)) {
 
-            dx += Math.cos(Math.toRadians(rotation - 90)) * 20;
-            dy += Math.sin(Math.toRadians(rotation - 90)) * 20;
+        // dx += Math.cos(Math.toRadians(rotation - 90)) * 20;
+        // dy += Math.sin(Math.toRadians(rotation - 90)) * 20;
 
-        }
+        // }
 
         // if (key == KeyEvent.VK_LEFT) {
         // rotation -= 15;
