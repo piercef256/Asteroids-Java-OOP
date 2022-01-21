@@ -68,8 +68,8 @@ public class Ship extends Sprite {
 
         if (pressedKeys.getOrDefault(KeyEvent.VK_UP, false)) {
 
-            dx += Math.cos(Math.toRadians(rotation - 90)) * 10;
-            dy += Math.sin(Math.toRadians(rotation - 90)) * 10;
+            dx += Math.cos(Math.toRadians(rotation - 90)) * 20;
+            dy += Math.sin(Math.toRadians(rotation - 90)) * 20;
 
         }
 
