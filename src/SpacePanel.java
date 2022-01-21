@@ -36,20 +36,27 @@ public class SpacePanel extends JPanel implements Runnable {
         keyboardListener = new KeyboardListener();
         this.addKeyListener(keyboardListener);
         this.setPreferredSize(SCREEN_SIZE);
-        asteroidList = new ArrayList<Asteroid>();
-        projectiles = new ArrayList<Projectile>();
+        asteroidList = Collections.synchronizedList(new ArrayList<Asteroid>());
+        projectiles = Collections.synchronizedList(new ArrayList<Projectile>());
+
         ship = new Ship(400, 400);
         scoreDisplay = new ScoreDisplay(GAME_WIDTH, GAME_HEIGHT);
         ingame = true;
         startAsteroidCreationThread();
     }
 
+    public void checkFire() {
+        if (ship.getPressedKeys().getOrDefault(KeyEvent.VK_SPACE, false)) {
+            fire();
+        }
+    }
+
     public void run() {
         initilize();
-        // startAsteroidCreationThread();
         while (true) {
 
             while (ingame) {
+                checkFire();
                 updatePosition();
                 checkCollisions();
                 repaint();
@@ -169,13 +176,13 @@ public class SpacePanel extends JPanel implements Runnable {
 
     public void checkCollisions() {
 
-        Rectangle r3 = ship.getBounds();
+        Rectangle r0 = ship.getBounds();
 
         for (Asteroid asteroid : asteroidList) {
 
             Rectangle r2 = asteroid.getBounds();
 
-            if (r3.intersects(r2)) {
+            if (r0.intersects(r2)) {
 
                 ship.setVisibility(false);
                 // asteroid.setVisibility(false);
@@ -193,7 +200,7 @@ public class SpacePanel extends JPanel implements Runnable {
 
                 if (r1.intersects(r2)) {
 
-                    m.setVisibility(false);
+                    // m.setVisibility(false);
                     asteroid.setVisibility(false);
                     scoreDisplay.addScore(asteroid.getDiameter());
                 }
@@ -205,10 +212,19 @@ public class SpacePanel extends JPanel implements Runnable {
         public void keyPressed(KeyEvent e) {
 
             ship.keyPressed(e);
-            if (ship.getPressedKeys().getOrDefault(KeyEvent.VK_SPACE, false)) {
-                fire();
+            // if (ship.getPressedKeys().getOrDefault(KeyEvent.VK_SPACE, false)) {
+            // // fire every 100 ms
+            // Timer timer = new Timer();
+            // timer.schedule(new TimerTask() {
+            // @Override
+            // public void run() {
+            // fire();
+            // }
+            // }, 0, 1000);
+            // // fire();
+            // // timer.cancel();
 
-            }
+            // }
 
         }
 
