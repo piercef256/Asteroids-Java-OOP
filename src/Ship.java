@@ -67,44 +67,16 @@ public class Ship extends Sprite {
     HashMap<Integer, Boolean> pressedKeys = new HashMap<>();
 
     public void keyPressed(KeyEvent e) {
-
         int key = e.getKeyCode();
         pressedKeys.put(key, Boolean.TRUE);
+    }
 
-        // if (pressedKeys.getOrDefault(KeyEvent.VK_LEFT, false)) {
-        // rotation -= 15;
-        // }
+    public void addToKeysPresses(int key) {
+        pressedKeys.put(key, Boolean.TRUE);
+    }
 
-        // if (pressedKeys.getOrDefault(KeyEvent.VK_RIGHT, false)) {
-        // rotation += 15;
-        // }
-
-        // if (pressedKeys.getOrDefault(KeyEvent.VK_UP, false)) {
-
-        // dx += Math.cos(Math.toRadians(rotation - 90)) * 20;
-        // dy += Math.sin(Math.toRadians(rotation - 90)) * 20;
-
-        // }
-
-        // if (key == KeyEvent.VK_LEFT) {
-        // rotation -= 15;
-        // }
-
-        // if (key == KeyEvent.VK_RIGHT) {
-        // rotation += 15;
-        // }
-
-        // if (key == KeyEvent.VK_UP) {
-
-        // dx += Math.cos(Math.toRadians(rotation - 90)) * 10;
-        // dy += Math.sin(Math.toRadians(rotation - 90)) * 10;
-
-        // }
-
-        if (key == KeyEvent.VK_DOWN) {
-
-        }
-
+    public HashMap<Integer, Boolean> getPressedKeys() {
+        return pressedKeys;
     }
 
     public void keyReleased(KeyEvent e) {

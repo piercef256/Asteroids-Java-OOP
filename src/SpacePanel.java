@@ -137,9 +137,21 @@ public class SpacePanel extends JPanel implements Runnable {
     }
 
     public Asteroid generateRandomAsteroid() {
-        int x = ThreadLocalRandom.current().nextInt(0, GAME_WIDTH);
-        int y = ThreadLocalRandom.current().nextInt(0, GAME_HEIGHT);
-        int size = ThreadLocalRandom.current().nextInt(15, 75);
+        int x = 0;
+        int y = 0;
+        int size = 0;
+        boolean isValid = false;
+        Rectangle r1 = ship.getBounds();
+
+        while (!isValid) {
+            x = ThreadLocalRandom.current().nextInt(0, GAME_WIDTH);
+            y = ThreadLocalRandom.current().nextInt(0, GAME_HEIGHT);
+            size = ThreadLocalRandom.current().nextInt(15, 75);
+            Rectangle r2 = new Rectangle(x, y, size, size);
+            if (!r1.intersects(r2)) {
+                isValid = true;
+            }
+        }
 
         return new Asteroid(x, y, size);
     }
@@ -149,6 +161,10 @@ public class SpacePanel extends JPanel implements Runnable {
             Asteroid asteroid = generateRandomAsteroid();
             asteroidList.add(asteroid);
         }
+    }
+
+    public boolean checkCollision(Rectangle r1, Rectangle r2) {
+        return r1.intersects(r2);
     }
 
     public void checkCollisions() {
@@ -187,10 +203,13 @@ public class SpacePanel extends JPanel implements Runnable {
 
     public class KeyboardListener extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                fire();
-            }
+
             ship.keyPressed(e);
+            if (ship.getPressedKeys().getOrDefault(KeyEvent.VK_SPACE, false)) {
+                fire();
+
+            }
+
         }
 
         public void keyReleased(KeyEvent e) {
