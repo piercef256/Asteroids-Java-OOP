@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Timer;
 
 public class SpacePanel extends JPanel implements Runnable {
     static final int GAME_WIDTH = 600;
@@ -32,35 +31,15 @@ public class SpacePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
-    public void initilize() {
-
-        this.setFocusable(true);
-        keyboardListener = new KeyboardListener();
-        this.addKeyListener(keyboardListener);
-        this.setPreferredSize(SCREEN_SIZE);
-        asteroidList = Collections.synchronizedList(new ArrayList<Asteroid>());
-        projectiles = Collections.synchronizedList(new ArrayList<Projectile>());
-
-        ship = new Ship(400, 400);
-        scoreDisplay = new ScoreDisplay(GAME_WIDTH, GAME_HEIGHT);
-        ingame = true;
-        startAsteroidCreationThread();
-    }
-
-    public void checkFire() {
-        if (ship.getPressedKeys().getOrDefault(KeyEvent.VK_SPACE, false)) {
-            fire();
-        }
-    }
-
     public void run() {
         initilize();
         while (true) {
 
             while (ingame) {
                 checkFire();
-                updatePosition();
                 checkCollisions();
+                updatePosition();
+
                 repaint();
                 try {
                     Thread.sleep(20);
@@ -78,14 +57,30 @@ public class SpacePanel extends JPanel implements Runnable {
         }
     }
 
+    public void initilize() {
+        this.setFocusable(true);
+        keyboardListener = new KeyboardListener();
+        this.addKeyListener(keyboardListener);
+        this.setPreferredSize(SCREEN_SIZE);
+        asteroidList = Collections.synchronizedList(new ArrayList<Asteroid>());
+        projectiles = Collections.synchronizedList(new ArrayList<Projectile>());
+
+        ship = new Ship(400, 400);
+        scoreDisplay = new ScoreDisplay(GAME_WIDTH, GAME_HEIGHT);
+        ingame = true;
+        startAsteroidCreationThread();
+    }
+
     public void reset() {
         removeKeyListener();
         removeAll();
         initilize();
     }
 
-    private void removeKeyListener() {
-        this.removeKeyListener(keyboardListener);
+    public void checkFire() {
+        if (ship.getPressedKeys().getOrDefault(KeyEvent.VK_SPACE, false)) {
+            fire();
+        }
     }
 
     public void startAsteroidCreationThread() {
@@ -223,6 +218,10 @@ public class SpacePanel extends JPanel implements Runnable {
         public void keyReleased(KeyEvent e) {
             ship.keyReleased(e);
         }
+    }
+
+    private void removeKeyListener() {
+        this.removeKeyListener(keyboardListener);
     }
 
     public void paint(Graphics g) {
